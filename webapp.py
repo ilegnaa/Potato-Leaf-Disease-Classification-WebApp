@@ -28,10 +28,14 @@ def main() :
         result, confidence = predict_class(image)
         st.write('Prediction : {}'.format(result))
         st.write('Confidence : {}%'.format(confidence))
-
+                
 def predict_class(image) :
     with st.spinner('Loading Model...'):
         classifier_model = keras.models.load_model('final_model.h5', compile = False)
+
+    # Specify the loss function and its parameters explicitly
+    loss_function = keras.losses.SparseCategoricalCrossentropy(from_logits=False, reduction='auto')
+    classifier_model.compile(loss=loss_function, optimizer='adam', metrics=['accuracy'])
 
     shape = ((256,256,3))
     model = keras.Sequential([hub.KerasLayer(classifier_model, input_shape = shape)])     # ye bhi kaam kar raha he
